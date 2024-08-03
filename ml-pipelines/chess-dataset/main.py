@@ -41,15 +41,29 @@ for idx, piece_folder in enumerate(os.listdir(ASSETS_FOLDER), 1):
 
                             cell = im.crop((left, upper, right, lower))
 
+                            resized_cell = resize_image_to_resolution(cell, OUTPUT_SIZE, OUTPUT_SIZE)
+
+                            effects = {
+                                "original": resized_cell,
+                            }
+
                             piece_type = get_piece_type_from_row(row)
                             piece_color = get_piece_color_from_col(col)
                             cell_color = get_cell_color_from_coordinates(col, row)
 
-                            cell_filename = f"{piece_folder}_{board_name}_{piece_type}_{piece_color}_{cell_color}.png"
-                            cell_path = os.path.join(OUTPUT_FOLDER, cell_filename)
-                            resized_cell = resize_image_to_resolution(cell, OUTPUT_SIZE, OUTPUT_SIZE)
+                            for effect_name, effect_img in effects.items():
+                                cell_filename = f"{piece_folder}_{board_name}_{piece_type}_{piece_color}_{cell_color}_noFlip.png"
+                                cell_path = os.path.join(OUTPUT_FOLDER, cell_filename)
 
-                            # Save the cell
-                            resized_cell.save(cell_path)
+                                flipped_img = effect_img.transpose(Image.FLIP_TOP_BOTTOM)
+                                flipped_filename = f"{piece_folder}_{board_name}_{piece_type}_{piece_color}_{cell_color}_flip.png"
+                                flipped_path = os.path.join(OUTPUT_FOLDER, flipped_filename)
+
+                                # Save the cells
+                                effect_img.save(cell_path)
+                                flipped_img.save(flipped_path)
+
+
+
 
 print("All cells have been extracted and saved.")
