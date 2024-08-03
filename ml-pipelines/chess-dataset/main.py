@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 
-from utils.utils import *
+from utils import *
 
 # Config
 ASSETS_FOLDER = 'assets'
