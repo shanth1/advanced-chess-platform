@@ -2,11 +2,13 @@ import os
 from PIL import Image
 
 from utils import *
+from effects import *
 
 # Config
 ASSETS_FOLDER = 'assets'
 OUTPUT_FOLDER = 'output'
 OUTPUT_SIZE = 32
+ADD_NOISE = False
 
 # Check for existence of output folder
 if not os.path.exists(OUTPUT_FOLDER):
@@ -14,7 +16,7 @@ if not os.path.exists(OUTPUT_FOLDER):
 
 # Navigate through folders in assets
 for idx, piece_folder in enumerate(os.listdir(ASSETS_FOLDER), 1):
-    print(idx, "/", len(os.listdir(ASSETS_FOLDER)))
+    print(idx, "/", len(os.listdir(ASSETS_FOLDER)), piece_folder)
     piece_path = os.path.join(ASSETS_FOLDER, piece_folder)
 
     # Checking for a folder
@@ -47,16 +49,19 @@ for idx, piece_folder in enumerate(os.listdir(ASSETS_FOLDER), 1):
                                 "original": resized_cell,
                             }
 
+                            if ADD_NOISE:
+                                effects["noise"] = add_noise(resized_cell)
+
                             piece_type = get_piece_type_from_row(row)
                             piece_color = get_piece_color_from_col(col)
                             cell_color = get_cell_color_from_coordinates(col, row)
 
                             for effect_name, effect_img in effects.items():
-                                cell_filename = f"{piece_folder}_{board_name}_{piece_type}_{piece_color}_{cell_color}_noFlip.png"
+                                cell_filename = f"{piece_folder}_{board_name}_{piece_type}_{piece_color}_{cell_color}_noFlip_{effect_name}.png"
                                 cell_path = os.path.join(OUTPUT_FOLDER, cell_filename)
 
                                 flipped_img = effect_img.transpose(Image.FLIP_TOP_BOTTOM)
-                                flipped_filename = f"{piece_folder}_{board_name}_{piece_type}_{piece_color}_{cell_color}_flip.png"
+                                flipped_filename = f"{piece_folder}_{board_name}_{piece_type}_{piece_color}_{cell_color}_flip_{effect_name}.png"
                                 flipped_path = os.path.join(OUTPUT_FOLDER, flipped_filename)
 
                                 # Save the cells
